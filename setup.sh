@@ -58,9 +58,11 @@ for arg in "$@"; do
   esac
 done
 
+env_path=/usr/local/bin/.env
+
 # Setting up api url and influx bucket in .env file
-rm -f .env
-touch .env
+rm -f $env_path
+touch $env_path
 if [ -z "$environment" ]; then
   api_subdomain="api"
   influx_bucket="playback"
@@ -68,13 +70,13 @@ else
   api_subdomain="${environment}-api"
   influx_bucket="${environment}-playback"
 fi
-echo PORT=8082 >> .env
-echo REACT_APP_API_URL=https://$api_subdomain.ritmostudio.com >> .env
-echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> .env
+echo PORT=8082 >> $env_path
+echo REACT_APP_API_URL=https://$api_subdomain.ritmostudio.com >> $env_path
+echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path
 echo "✅ Environment set"
 
 # Setting up put-urls token in .env file
-echo "PUT_URLS_TOKEN=$put_urls_token" >> .env
+echo "PUT_URLS_TOKEN=$put_urls_token" >> $env_path
 echo "✅ Put-urls token created"
 
 # -----------
@@ -88,12 +90,12 @@ if [ -z "$access_token" ]; then
   echo "❌ Failed to parse access token"
   exit 1
 fi
-echo "RITMO_TOKEN=$access_token" >> .env
+echo "RITMO_TOKEN=$access_token" >> $env_path
 echo "✅ Access token created"
 
 # -----------
 
-echo "JWT_SECRET=$(openssl rand -hex 32)" >> .env
+echo "JWT_SECRET=$(openssl rand -hex 32)" >> $env_path
 echo "✅ JWT secret created"
 
 # -----------
@@ -136,10 +138,10 @@ fi
 # ------------
 
 # Downloading startup script
-sudo curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh --output /usr/local/bin/on-startup.sh
+sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh --output /usr/local/bin/on-startup.sh
 sudo chmod a+x /usr/local/bin/on-startup.sh
 # Downloading service file
-sudo curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output /etc/systemd/system/ritmo-box.service
+sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output /etc/systemd/system/ritmo-box.service
 sudo chmod 644 /etc/systemd/system/ritmo-box.service
 sudo systemctl enable ritmo-box.service
 echo "✅ Configured startup script"
