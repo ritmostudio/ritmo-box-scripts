@@ -114,8 +114,8 @@ echo "✅ Configured Pulseaudio server"
 # -----------
 
 # echo "Setting permissions to LevelDB"
-mkdir -p /usr/local/bin/ritmo/node-player-db
-sudo chmod 777 /usr/local/bin/ritmo/node-player-db
+mkdir -p /usr/local/bin/ritmo/db
+sudo chmod 777 /usr/local/bin/ritmo/db
 echo "✅ Configured LevelDB"
 
 # ------------
