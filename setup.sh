@@ -150,6 +150,7 @@ sudo chmod 644 $service_path
 sudo systemctl enable ritmo-box.service
 echo "✅ Configured startup script"
 
-echo "✅ Setup completed! restarting in 2 seconds..."
-# sleep 2
-# sudo reboot now
+echo "✅ Setup completed"
+
+sudo systemctl start ritmo-box.service
+echo "✅ Ritmo BOX started! Go to https://box.ritmostudio.com to control the music"
