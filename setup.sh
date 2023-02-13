@@ -118,7 +118,7 @@ echo "✅ Configured LevelDB"
 
 # Install docker
 if ! command -v docker > /dev/null 2>&1; then
-  curl https://github.com/ritmostudio/docker-install --output ~/docker-install.sh
+  curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/docker-install.sh --output ~/docker-install.sh
   sh ./docker-install.sh
   echo "✅ Docker installed"
 else 
@@ -136,10 +136,10 @@ fi
 # ------------
 
 # Downloading startup script
-curl https://github.com/ritmostudio/ritmo-box-scripts --output ~/on-startup.sh
+curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh --output ~/on-startup.sh
 chmod a+x ~/on-startup.sh
 # Downloading service file
-curl https://github.com/ritmostudio/service --output /etc/systemd/system/ritmo-box.service
+curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output /etc/systemd/system/ritmo-box.service
 chmod 644 /etc/systemd/system/ritmo-box.service
 systemctl enable ritmo-box.service
 echo "✅ Configured startup script"
