@@ -136,8 +136,8 @@ fi
 # ------------
 
 # Downloading startup script
-curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh --output ~/on-startup.sh
-sudo chmod a+x ~/on-startup.sh
+sudo curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh --output /usr/local/bin/on-startup.sh
+sudo chmod a+x /usr/local/bin/on-startup.sh
 # Downloading service file
 sudo curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output /etc/systemd/system/ritmo-box.service
 sudo chmod 644 /etc/systemd/system/ritmo-box.service
