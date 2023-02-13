@@ -2,7 +2,7 @@
 Description=Ritmo Box Startup
  
 [Service]
-ExecStart=/usr/local/bin/on-startup.sh
+ExecStart=/usr/local/bin/ritmo/on-startup.sh
  
 [Install]
 WantedBy=default.target

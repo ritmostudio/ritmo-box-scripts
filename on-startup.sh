@@ -10,15 +10,17 @@ if docker ps -a | grep ritmo-node-player &> /dev/null; then
   docker rm ritmo-node-player
 fi
 
+levelDB_path=/usr/local/bin/ritmo/node-player-db
+
 docker run \
   -v /run/user/1000/pulse:/run/user/1000/pulse \
   -e PULSE_SERVER=unix:/run/user/1000/pulse/native \
   -u 1000:1000 \
-  --env-file .env \
+  --env-file /etc/ritmo/.env \
   -p 8082:8082 \
   -d \
-  -v ~/node-player-db:/home/node-player-db \
-  -e REACT_APP_DB_PREFIX=/home/node-player-db/ \
+  -v $levelDB_path:$levelDB_path \
+  -e REACT_APP_DB_PREFIX=$levelDB_path/ \
   --restart always \
   --name ritmo-node-player \
   lucassaid/ritmo-node-player

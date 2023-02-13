@@ -58,7 +58,7 @@ for arg in "$@"; do
   esac
 done
 
-env_path=/usr/local/bin/.env
+env_path=/etc/ritmo/.env
 
 # Setting up api url and influx bucket in .env file
 rm -f $env_path
@@ -112,8 +112,8 @@ echo "✅ Configured Pulseaudio server"
 # -----------
 
 # echo "Setting permissions to LevelDB"
-mkdir -p ~/node-player-db
-sudo chmod 777 ~/node-player-db
+mkdir -p /usr/local/bin/ritmo/node-player-db
+sudo chmod 777 /usr/local/bin/ritmo/node-player-db
 echo "✅ Configured LevelDB"
 
 # ------------
@@ -138,11 +138,13 @@ fi
 # ------------
 
 # Downloading startup script
-sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh --output /usr/local/bin/on-startup.sh
-sudo chmod a+x /usr/local/bin/on-startup.sh
+startup_path=/usr/local/bin/ritmo/on-startup.sh
+sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh --output $startup_path
+sudo chmod a+x $startup_path
 # Downloading service file
-sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output /etc/systemd/system/ritmo-box.service
-sudo chmod 644 /etc/systemd/system/ritmo-box.service
+service_path=/etc/systemd/system/ritmo-box.service
+sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output $service_path
+sudo chmod 644 $service_path
 sudo systemctl enable ritmo-box.service
 echo "✅ Configured startup script"
 
