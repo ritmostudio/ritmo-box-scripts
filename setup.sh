@@ -58,6 +58,8 @@ for arg in "$@"; do
   esac
 done
 
+sudo mkdir -p /etc/ritmo
+
 env_path=/etc/ritmo/.env
 
 # Setting up api url and influx bucket in .env file
