@@ -5,7 +5,7 @@ echo "Dwonloading Ritmo Node Player image"
 docker pull lucassaid/ritmo-node-player || true
 
 if docker ps -a | grep ritmo-node-player &> /dev/null; then
-  # Detiene y elimina el contenedor
+  echo "Stopping Ritmo Node Player"
   docker stop ritmo-node-player
   docker rm ritmo-node-player
 fi

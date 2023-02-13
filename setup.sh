@@ -141,7 +141,7 @@ sudo chmod a+x ~/on-startup.sh
 # Downloading service file
 sudo curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output /etc/systemd/system/ritmo-box.service
 sudo chmod 644 /etc/systemd/system/ritmo-box.service
-systemctl enable ritmo-box.service
+sudo systemctl enable ritmo-box.service
 echo "✅ Configured startup script"
 
 echo "✅ Setup completed! restarting in 2 seconds..."
