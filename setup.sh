@@ -28,7 +28,7 @@ done
 
 while [ -z "$password" ]; do
   echo "Branch password: "
-  read -s password
+  read password
   if [ -z "$password" ]; then
     echo "You need to enter the branch password."
   fi
