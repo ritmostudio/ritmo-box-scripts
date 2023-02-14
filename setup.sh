@@ -34,18 +34,9 @@ while [ -z "$password" ]; do
   fi
 done
 
-# -----------
+# ------------
 
-# Get put-urls token
-put_urls_token=$(curl -s -X POST $box_api_url/auth/put-urls-token \
-  -H "Content-Type: application/json" \
-  -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
-if [ -z "$put_urls_token" ] || [ "$put_urls_token" == "INVALID_LOGIN" ]; then
-  echo "❌ Invalid login, please try again"
-  exit 1
-fi
-
-# Get environment
+# Set environment
 for arg in "$@"; do
   case $arg in
     -e=*)
@@ -58,13 +49,6 @@ for arg in "$@"; do
   esac
 done
 
-sudo mkdir -p /etc/ritmo
-
-env_path=/etc/ritmo/.env
-
-# Setting up api url and influx bucket in .env file
-rm -f $env_path
-touch $env_path
 if [ -z "$environment" ]; then
   api_url="https://api.ritmostudio.com"
   box_api_url="https://box-api.ritmostudio.com"
@@ -74,6 +58,27 @@ else
   box_api_url="https://${environment}-box-api.ritmostudio.com"
   influx_bucket="${environment}-playback"
 fi
+
+# -----------
+
+# Get put-urls token
+put_urls_token=$(curl -s -X POST $box_api_url/auth/put-urls-token \
+  -H "Content-Type: application/json" \
+  -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
+if [ -z "$put_urls_token" ] || [ "$put_urls_token" == "INVALID_LOGIN" ]; then
+  echo "❌ Invalid login, please try again"
+  exit 1
+fi
+
+
+
+sudo mkdir -p /etc/ritmo
+
+env_path=/etc/ritmo/.env
+
+# Setting up api url and influx bucket in .env file
+rm -f $env_path
+touch $env_path
 echo PORT=8082 >> $env_path
 echo REACT_APP_API_URL=$api_url >> $env_path
 echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path
