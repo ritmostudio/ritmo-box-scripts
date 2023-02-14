@@ -17,5 +17,5 @@ docker run \
   -d \
   -v $levelDB_path:$levelDB_path \
   -e REACT_APP_DB_PREFIX=$levelDB_path/ \
-  --restart always \
+  --restart on-failure \
   lucassaid/ritmo-node-player

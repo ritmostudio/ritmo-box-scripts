@@ -37,7 +37,7 @@ done
 # -----------
 
 # Get put-urls token
-put_urls_token=$(curl -s -X POST http://192.168.20.101:8081/auth/get-put-urls-token \
+put_urls_token=$(curl -s -X POST http://192.168.20.101:8081/auth/put-urls-token \
   -H "Content-Type: application/json" \
   -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
 if [ -z "$put_urls_token" ] || [ "$put_urls_token" == "INVALID_LOGIN" ]; then
@@ -75,6 +75,7 @@ fi
 echo PORT=8082 >> $env_path
 echo REACT_APP_API_URL=https://$api_subdomain.ritmostudio.com >> $env_path
 echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path
+echo BOX_API_URL="http:192.168.20.101:8081" >> $env_path
 echo "✅ Environment set"
 
 # Setting up put-urls token in .env file
@@ -150,7 +151,16 @@ sudo chmod 644 $service_path
 sudo systemctl enable ritmo-box.service
 echo "✅ Configured startup script"
 
+# ------------
+
+sudo ufw allow 8082/tcp
+echo "✅ Port 8082 open"
+
+# ------------
+
 echo "✅ Setup completed"
 
+# ------------
+
 sudo systemctl start ritmo-box.service
-echo "✅ Ritmo BOX started! Go to https://box.ritmostudio.com to control the music"
+echo "✅ Ritmo BOX started! Go to box.ritmostudio.com to control the music"
