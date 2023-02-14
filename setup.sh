@@ -37,7 +37,7 @@ done
 # -----------
 
 # Get put-urls token
-put_urls_token=$(curl -s -X POST http://192.168.20.101:8081/auth/put-urls-token \
+put_urls_token=$(curl -s -X POST $box_api_url/auth/put-urls-token \
   -H "Content-Type: application/json" \
   -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
 if [ -z "$put_urls_token" ] || [ "$put_urls_token" == "INVALID_LOGIN" ]; then
@@ -66,16 +66,18 @@ env_path=/etc/ritmo/.env
 rm -f $env_path
 touch $env_path
 if [ -z "$environment" ]; then
-  api_subdomain="api"
+  api_url="https://api.ritmostudio.com"
+  box_api_url="https://box-api.ritmostudio.com"
   influx_bucket="playback"
 else
-  api_subdomain="${environment}-api"
+  api_url="https://${environment}-api.ritmostudio.com"
+  box_api_url="https://${environment}-box-api.ritmostudio.com"
   influx_bucket="${environment}-playback"
 fi
 echo PORT=8082 >> $env_path
-echo REACT_APP_API_URL=https://$api_subdomain.ritmostudio.com >> $env_path
+echo REACT_APP_API_URL=$api_url >> $env_path
 echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path
-echo BOX_API_URL="http:192.168.20.101:8081" >> $env_path
+echo BOX_API_URL=$box_api_url >> $env_path
 echo "✅ Environment set"
 
 # Setting up put-urls token in .env file
@@ -85,7 +87,7 @@ echo "✅ Put-urls token created"
 # -----------
 
 # API LOGIN
-login_response=$(curl -s -X POST https://$api_subdomain.ritmostudio.com/auth/v1/player-login \
+login_response=$(curl -s -X POST $api_url/auth/v1/player-login \
   -H "Content-Type: application/json" \
   -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
 access_token=$(echo $login_response | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
