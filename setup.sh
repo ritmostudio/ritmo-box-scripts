@@ -123,7 +123,7 @@ echo "✅ JWT secret created"
 # Pulseaudio
 if [ ! -f /etc/pulse/default.pa ]; then
   sudo apt update
-  sudo apt install pulseaudio
+  sudo apt -y install pulseaudio
 
   if [ ! -f /etc/pulse/default.pa ]; then
     echo "❌ Error installing Pulseaudio"
