@@ -113,8 +113,9 @@ echo "✅ JWT secret created"
 
 # Pulseaudio
 if [ ! -f /etc/pulse/default.pa ]; then
-  echo "❌ Pulseaudio server not found"
-  exit 1
+  sudo apt update
+  sudo apt install pulseaudio
+  echo "✅ Pulseaudio installed"
 fi
 if ! grep -q "load-module module-native-protocol-tcp auth-anonymous=1" /etc/pulse/default.pa; then
   echo "load-module module-native-protocol-tcp auth-anonymous=1" >> /etc/pulse/default.pa
