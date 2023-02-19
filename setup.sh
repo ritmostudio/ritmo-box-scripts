@@ -18,6 +18,8 @@ if ! command -v systemctl > /dev/null 2>&1; then
   exit 1
 fi
 
+DEBIAN_FRONTEND=noninteractive
+
 while [ -z "$username" ]; do
   echo "Branch: "
   read username
@@ -148,9 +150,7 @@ echo "✅ Configured LevelDB"
 
 # Install docker
 if ! command -v docker > /dev/null 2>&1; then
-  curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/docker-install.sh --output ./docker-install.sh
-  sh ./docker-install.sh
-  rm -f ./docker-install.sh
+  curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/docker-install.sh | sh
 
   if ! command -v docker > /dev/null 2>&1; then
     echo "❌ Error installing Docker"
