@@ -11,8 +11,8 @@ echo "
   |  |  |  ||  |    |  |    |  |  \/  |  | \      /
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
-
   BOX SCRIPTS V0.0.1
+
 "
 
 # Validations
