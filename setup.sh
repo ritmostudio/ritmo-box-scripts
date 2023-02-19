@@ -180,7 +180,7 @@ sudo chmod a+x $startup_path
 service_path=/etc/systemd/system/ritmo-box.service
 sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output $service_path
 sudo chmod 644 $service_path
-sudo systemctl enable ritmo-box.service
+sudo systemctl enable ritmo-box.service > /dev/null
 echo "✅ Configured startup script"
 
 # ------------
