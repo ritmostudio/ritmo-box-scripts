@@ -98,7 +98,16 @@ echo "✅ Access token created"
 if ! command -v tailscale > /dev/null 2>&1; then
   echo "Installing Tailscale"
   curl -fsSL https://tailscale.com/install.sh | sh
+
+  if ! command -v tailscale > /dev/null 2>&1; then
+    echo "❌ Error installing Tailscale"
+    exit 1
+  fi
+
+  echo "✅ Tailscale installed"
+
 fi
+
 sudo tailscale down
 sudo tailscale up --authkey=$tailscale_token --hostname=$branch_id
 echo "✅ Tailscale configured"
@@ -115,6 +124,12 @@ echo "✅ JWT secret created"
 if [ ! -f /etc/pulse/default.pa ]; then
   sudo apt update
   sudo apt install pulseaudio
+
+  if [ ! -f /etc/pulse/default.pa ]; then
+    echo "❌ Error installing Pulseaudio"
+    exit 1
+  fi
+
   echo "✅ Pulseaudio installed"
 fi
 if ! grep -q "load-module module-native-protocol-tcp auth-anonymous=1" /etc/pulse/default.pa; then
@@ -133,10 +148,17 @@ echo "✅ Configured LevelDB"
 
 # Install docker
 if ! command -v docker > /dev/null 2>&1; then
-  curl https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/docker-install.sh --output ~/docker-install.sh
+  curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/docker-install.sh --output ./docker-install.sh
   sh ./docker-install.sh
+  rm -f ./docker-install.sh
+
+  if ! command -v docker > /dev/null 2>&1; then
+    echo "❌ Error installing Docker"
+    exit 1
+  fi
+
   echo "✅ Docker installed"
-else 
+else
   echo "✅ Docker already installed"
 fi
 
