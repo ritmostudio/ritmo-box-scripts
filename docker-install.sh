@@ -17,7 +17,7 @@ echo \
 
 # Installing docker
 sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # Post install (to use without sudo)
 (getent group docker || sudo groupadd docker) > /dev/null
