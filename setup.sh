@@ -43,34 +43,27 @@ for arg in "$@"; do
       environment="${arg#*=}"
       shift
       ;;
-    *)
-      # Process other arguments
+    -t=*)
+      tailscale_token="${arg#*=}"
+      shift
       ;;
   esac
 done
 
+if [ -z "$tailscale_token" ]; then
+  echo "❌ Token not provided"
+  exit 1
+fi
+
 if [ -z "$environment" ]; then
   api_url="https://api.ritmostudio.com"
-  box_api_url="https://box-api.ritmostudio.com"
   influx_bucket="playback"
 else
   api_url="https://${environment}-api.ritmostudio.com"
-  box_api_url="https://${environment}-box-api.ritmostudio.com"
   influx_bucket="${environment}-playback"
 fi
 
 # -----------
-
-# Get put-urls token
-put_urls_token=$(curl -s -X POST $box_api_url/auth/put-urls-token \
-  -H "Content-Type: application/json" \
-  -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
-if [ -z "$put_urls_token" ] || [ "$put_urls_token" == "INVALID_LOGIN" ]; then
-  echo "❌ Invalid login, please try again"
-  exit 1
-fi
-
-
 
 sudo mkdir -p /etc/ritmo
 
@@ -82,12 +75,7 @@ touch $env_path
 echo PORT=8082 >> $env_path
 echo REACT_APP_API_URL=$api_url >> $env_path
 echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path
-echo BOX_API_URL=$box_api_url >> $env_path
 echo "✅ Environment set"
-
-# Setting up put-urls token in .env file
-echo "PUT_URLS_TOKEN=$put_urls_token" >> $env_path
-echo "✅ Put-urls token created"
 
 # -----------
 
@@ -96,6 +84,7 @@ login_response=$(curl -s -X POST $api_url/auth/v1/player-login \
   -H "Content-Type: application/json" \
   -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
 access_token=$(echo $login_response | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
+branch_id=$(echo $login_response | sed -n 's/.*"_id":"\([^"]*\)".*/\1/p')
 if [ -z "$access_token" ]; then
   echo "❌ Failed to parse access token"
   exit 1
@@ -105,11 +94,24 @@ echo "✅ Access token created"
 
 # -----------
 
+# Tailscale
+if ! command -v tailscale > /dev/null 2>&1; then
+  echo "Installing Tailscale"
+  curl -fsSL https://tailscale.com/install.sh | sh
+fi
+sudo tailscale down
+sudo tailscale up --authkey=$tailscale_token --hostname=$branch_id
+echo "✅ Tailscale configured"
+
+# -----------
+
+# Random JWT secret
 echo "JWT_SECRET=$(openssl rand -hex 32)" >> $env_path
 echo "✅ JWT secret created"
 
 # -----------
 
+# Pulseaudio
 if [ ! -f /etc/pulse/default.pa ]; then
   echo "❌ Pulseaudio server not found"
   exit 1
@@ -121,7 +123,7 @@ echo "✅ Configured Pulseaudio server"
 
 # -----------
 
-# echo "Setting permissions to LevelDB"
+# Permissions for LevelDB
 mkdir -p /usr/local/bin/ritmo/db
 sudo chmod 777 /usr/local/bin/ritmo/db
 echo "✅ Configured LevelDB"
