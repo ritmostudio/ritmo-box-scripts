@@ -112,7 +112,7 @@ if ! command -v tailscale > /dev/null 2>&1; then
 fi
 
 sudo tailscale down
-sudo tailscale up --authkey=$tailscale_token --hostname="${branch_id/BRAN:/""}"
+sudo tailscale up --authkey=$tailscale_token --hostname="${branch_id/"BRAN:"/}"
 echo "✅ Tailscale configured"
 
 # -----------
