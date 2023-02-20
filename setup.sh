@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.81
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.82
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -72,7 +72,7 @@ fi
 login_response=$(curl -s -X POST $api_url/auth/v1/player-login \
   -H "Content-Type: application/json" \
   -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
-if [ "$login_response" == "INVALID_LOGIN" ]; then
+if [ "$(type -t login_response)" = "string" ] && [ "$login_response" == "INVALID_LOGIN" ]; then
   echo "❌ Incorrect branch or password"
   exit 1
 fi
@@ -114,9 +114,8 @@ if ! command -v tailscale > /dev/null 2>&1; then
 
 fi
 
-hostname="${branch_id/"BRAN:"}"
 sudo tailscale down
-sudo tailscale up --authkey=$tailscale_token --hostname=$hostname
+sudo tailscale up --authkey=$tailscale_token --hostname=$(echo "$branch_id" | sed 's/BRAN://')
 echo "✅ Tailscale configured"
 
 # -----------

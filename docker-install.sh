@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "🐳 Installing Docker"
 
 # Setting repository
