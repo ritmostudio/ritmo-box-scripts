@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.82
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.83
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -18,8 +18,6 @@ if ! command -v systemctl > /dev/null 2>&1; then
   echo "❌ Systemd not found, make sure you are running this script on a Linux machine"
   exit 1
 fi
-
-DEBIAN_FRONTEND=noninteractive
 
 while [ -z "$username" ]; do
   echo "Branch: "
