@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.3
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.4
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -93,7 +93,7 @@ if [ -z "$access_token" ]; then
   exit 1
 fi
 echo "RITMO_TOKEN=$access_token" >> $env_path
-echo "✅ Access token created"
+echo "✅ Access token created for $branch_id"
 
 # -----------
 
