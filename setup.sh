@@ -99,7 +99,7 @@ echo "✅ Access token created"
 
 # Tailscale
 if ! command -v tailscale > /dev/null 2>&1; then
-  echo "Installing Tailscale"
+  echo "𓃑  Installing Tailscale"
   curl -fsSL https://tailscale.com/install.sh | sh
 
   if ! command -v tailscale > /dev/null 2>&1; then
@@ -112,7 +112,7 @@ if ! command -v tailscale > /dev/null 2>&1; then
 fi
 
 sudo tailscale down
-sudo tailscale up --authkey=$tailscale_token --hostname=$branch_id
+sudo tailscale up --authkey=$tailscale_token --hostname="${branch_id/BRAN:/""}"
 echo "✅ Tailscale configured"
 
 # -----------
@@ -125,6 +125,7 @@ echo "✅ JWT secret created"
 
 # Pulseaudio
 if [ ! -f /etc/pulse/default.pa ]; then
+  echo "🔊 Installing Pulseaudio"
   sudo apt update
   sudo apt -y install pulseaudio
 
@@ -151,7 +152,7 @@ echo "✅ Configured LevelDB"
 
 # Install docker
 if ! command -v docker > /dev/null 2>&1; then
-  curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/docker-install.sh | sh
+  curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/docker-install.sh | sudo sh
 
   if ! command -v docker > /dev/null 2>&1; then
     echo "❌ Error installing Docker"
