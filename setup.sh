@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.7
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.81
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -114,7 +114,7 @@ if ! command -v tailscale > /dev/null 2>&1; then
 
 fi
 
-hostname="${branch_id/"BRAN:"/}"
+hostname="${branch_id/"BRAN:"}"
 sudo tailscale down
 sudo tailscale up --authkey=$tailscale_token --hostname=$hostname
 echo "✅ Tailscale configured"
