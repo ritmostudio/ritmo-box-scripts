@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.4
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.5
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -68,20 +68,6 @@ fi
 
 # -----------
 
-sudo mkdir -p /etc/ritmo
-
-env_path=/etc/ritmo/.env
-
-# Setting up api url and influx bucket in .env file
-rm -f $env_path
-touch $env_path
-echo PORT=8082 >> $env_path
-echo REACT_APP_API_URL=$api_url >> $env_path
-echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path
-echo "✅ Environment set"
-
-# -----------
-
 # API LOGIN
 login_response=$(curl -s -X POST $api_url/auth/v1/player-login \
   -H "Content-Type: application/json" \
@@ -92,6 +78,19 @@ if [ -z "$access_token" ]; then
   echo "❌ Failed to parse access token"
   exit 1
 fi
+
+# Crating folder for .env file
+sudo mkdir -p /etc/ritmo
+env_path=/etc/ritmo/.env
+
+# Setting up api url and influx bucket in .env file
+rm -f $env_path
+touch $env_path
+echo PORT=8082 >> $env_path
+echo REACT_APP_API_URL=$api_url >> $env_path
+echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path
+echo "✅ Environment set"
+
 echo "RITMO_TOKEN=$access_token" >> $env_path
 echo "✅ Access token created for $branch_id"
 
