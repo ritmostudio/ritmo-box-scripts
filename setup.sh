@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.5
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.6
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -72,6 +72,10 @@ fi
 login_response=$(curl -s -X POST $api_url/auth/v1/player-login \
   -H "Content-Type: application/json" \
   -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
+if [ "$login_response" == "INVALID_LOGIN" ]; then
+  echo "❌ Incorrect branch or password"
+  exit 1
+fi
 access_token=$(echo $login_response | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
 branch_id=$(echo $login_response | sed -n 's/.*"_id":"\([^"]*\)".*/\1/p')
 if [ -z "$access_token" ]; then
