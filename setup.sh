@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.85
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.86
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -153,7 +153,11 @@ echo "✅ Configured LevelDB"
 
 # Install docker
 if ! command -v docker > /dev/null 2>&1; then
-  curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/docker-install.sh | sudo sh
+
+  echo "🐳 Installing Docker"
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sh get-docker.sh
+  sudo dockerd-rootless-setuptool.sh install
 
   if ! command -v docker > /dev/null 2>&1; then
     echo "❌ Error installing Docker"
