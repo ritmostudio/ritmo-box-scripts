@@ -18,7 +18,7 @@ echo \
 
 # Installing docker
 sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # Activating docker
 if ! systemctl is-active --quiet docker; then
@@ -29,4 +29,3 @@ fi
 # Post install (to use without sudo)
 (getent group docker || sudo groupadd docker) > /dev/null
 sudo usermod -aG docker $USER
-newgrp docker
