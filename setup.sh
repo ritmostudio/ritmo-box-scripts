@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.89
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.90
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -138,7 +138,7 @@ if [ ! -f /etc/pulse/default.pa ]; then
   echo "✅ Pulseaudio installed"
 fi
 if ! grep -q "load-module module-native-protocol-tcp auth-anonymous=1" /etc/pulse/default.pa; then
-  echo "load-module module-native-protocol-tcp auth-anonymous=1" >> /etc/pulse/default.pa
+  sudo echo "load-module module-native-protocol-tcp auth-anonymous=1" >> /etc/pulse/default.pa
 fi
 echo "✅ Configured Pulseaudio server"
 
