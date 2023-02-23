@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.86
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.87
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -157,7 +157,7 @@ if ! command -v docker > /dev/null 2>&1; then
   echo "🐳 Installing Docker"
   curl -fsSL https://get.docker.com -o get-docker.sh
   sh get-docker.sh
-  sudo dockerd-rootless-setuptool.sh install
+  dockerd-rootless-setuptool.sh install
 
   if ! command -v docker > /dev/null 2>&1; then
     echo "❌ Error installing Docker"
