@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.88
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.89
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -145,8 +145,8 @@ echo "✅ Configured Pulseaudio server"
 # -----------
 
 # Permissions for LevelDB
-mkdir -p /usr/local/bin/ritmo/db
-sudo chmod 777 /usr/local/bin/ritmo/db
+sudo mkdir -p /usr/local/bin/ritmo/db
+sudo chmod -R 777 /usr/local/bin/ritmo/db
 echo "✅ Configured LevelDB"
 
 # ------------
@@ -204,5 +204,5 @@ echo "✅ Setup completed"
 
 # ------------
 
-sudo systemctl start ritmo-box.service
+$startup_path sh
 echo "✅ Ritmo BOX started! Go to box.ritmostudio.com to control the music"

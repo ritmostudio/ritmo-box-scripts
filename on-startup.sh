@@ -4,7 +4,7 @@ echo "Starting Ritmo Box"
 echo "Dwonloading Ritmo Node Player image" 
 docker pull lucassaid/ritmo-node-player || true
 
-docker ps -aq | xargs docker stop | xargs docker rm
+docker rm -f $(docker ps -aq)
 
 docker run \
   -v /run/user/1000/pulse:/run/user/1000/pulse \
