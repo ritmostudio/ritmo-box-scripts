@@ -7,8 +7,8 @@ docker pull lucassaid/ritmo-node-player || true
 docker rm -f $(docker ps -aq)
 
 docker run \
-  -v /run/user/1000/pulse:/run/user/1000/pulse \
-  -e PULSE_SERVER=tcp:172.17.0.1 \
+  -v /run/user/1000/pulse/native:/run/user/1000/pulse/native \
+  -e PULSE_SERVER=unix:/run/user/1000/pulse/native \
   -u 1000:1000 \
   --env-file /etc/ritmo/.env \
   -p 8082:8082 \

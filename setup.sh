@@ -8,17 +8,18 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.90
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.91
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
 
-# Validations
+# ------ VALIDATIONS ------
 if ! command -v systemctl > /dev/null 2>&1; then
   echo "❌ Systemd not found, make sure you are running this script on a Linux machine"
   exit 1
 fi
 
+# ------ RITMO CREDENTIALS ------
 while [ -z "$username" ]; do
   echo "Branch: "
   read username
@@ -26,7 +27,6 @@ while [ -z "$username" ]; do
     echo "You need to enter the branch credential."
   fi
 done
-
 while [ -z "$password" ]; do
   echo "Branch password: "
   read password
@@ -35,26 +35,15 @@ while [ -z "$password" ]; do
   fi
 done
 
-# ------------
-
-# Set environment
+# ------ ARGUMENTS ------
 for arg in "$@"; do
   case $arg in
     -e=*)
       environment="${arg#*=}"
       shift
       ;;
-    -t=*)
-      tailscale_token="${arg#*=}"
-      shift
-      ;;
   esac
 done
-
-if [ -z "$tailscale_token" ]; then
-  echo "❌ Token not provided"
-  exit 1
-fi
 
 if [ -z "$environment" ]; then
   api_url="https://api.ritmostudio.com"
@@ -64,9 +53,7 @@ else
   influx_bucket="${environment}-playback"
 fi
 
-# -----------
-
-# API LOGIN
+# ----- API LOGIN ------
 login_response=$(curl -s -X POST $api_url/auth/v1/player-login \
   -H "Content-Type: application/json" \
   -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
@@ -81,128 +68,85 @@ if [ -z "$access_token" ]; then
   exit 1
 fi
 
-# Crating folder for .env file
-sudo mkdir -p /etc/ritmo
-env_path=/etc/ritmo/.env
-
-# Setting up api url and influx bucket in .env file
-rm -f $env_path
-touch $env_path
-echo PORT=8082 >> $env_path
-echo REACT_APP_API_URL=$api_url >> $env_path
-echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path
+# ----- ENV ------
+sudo rm -f $env_path
+sudo touch $env_path
+sudo sh -c "echo PORT=8082 >> $env_path"
+sudo sh -c "echo REACT_APP_API_URL=$api_url >> $env_path"
+sudo sh -c "echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path"
+sudo sh -c "echo RITMO_TOKEN=$access_token >> $env_path"
+sudo sh -c "echo JWT_SECRET=$(openssl rand -hex 32) >> $env_path"
 echo "✅ Environment set"
 
-echo "RITMO_TOKEN=$access_token" >> $env_path
-echo "✅ Access token created for $branch_id"
-
-# -----------
-
-# Tailscale
-if ! command -v tailscale > /dev/null 2>&1; then
-  echo "𓃑  Installing Tailscale"
-  curl -fsSL https://tailscale.com/install.sh | sh
-
-  if ! command -v tailscale > /dev/null 2>&1; then
-    echo "❌ Error installing Tailscale"
-    exit 1
-  fi
-
-  echo "✅ Tailscale installed"
-
-fi
-
-sudo tailscale down
-sudo tailscale up --authkey=$tailscale_token --hostname=$(echo "$branch_id" | sed 's/BRAN://')
-echo "✅ Tailscale configured"
-
-# -----------
-
-# Random JWT secret
-echo "JWT_SECRET=$(openssl rand -hex 32)" >> $env_path
-echo "✅ JWT secret created"
-
-# -----------
-
-# Pulseaudio
+# ----- PULSEAUDIO ------
 if [ ! -f /etc/pulse/default.pa ]; then
   echo "🔊 Installing Pulseaudio"
-  sudo apt update
-  sudo apt -y install pulseaudio
-
+  sudo apt-get update
+  sudo DEBIAN_FRONTEND=noninteractive apt-get -y install pulseaudio pulseaudio-utils alsa-utils
   if [ ! -f /etc/pulse/default.pa ]; then
     echo "❌ Error installing Pulseaudio"
     exit 1
   fi
-
   echo "✅ Pulseaudio installed"
 fi
-if ! grep -q "load-module module-native-protocol-tcp auth-anonymous=1" /etc/pulse/default.pa; then
-  sudo echo "load-module module-native-protocol-tcp auth-anonymous=1" >> /etc/pulse/default.pa
+
+# allowing anonymous connections
+sed -i '' '/^load-module module-native-protocol-unix/d' /etc/pulse/default.pa
+pulse_auth_line="load-module module-native-protocol-unix auth-anonymous=1"
+if ! grep -q $pulse_auth_line /etc/pulse/default.pa; then
+  sudo sh -c "$pulse_auth_line >> /etc/pulse/default.pa"
 fi
-echo "✅ Configured Pulseaudio server"
 
-# -----------
+# Select default audio device
+sudo sh -c "echo 'set-default-sink alsa_output.platform-soc_sound.analog-stereo' >> /etc/pulse/default.pa"
 
-# Permissions for LevelDB
+pulseaudio -k > /dev/null
+pulseaudio -D
+echo "✅ Pulseaudio server started"
+
+# ----- LEVEL DB ------
 sudo mkdir -p /usr/local/bin/ritmo/db
 sudo chmod -R 777 /usr/local/bin/ritmo/db
 echo "✅ Configured LevelDB"
 
-# ------------
-
-# Install docker
+# ----- DOCKER -------
 if ! command -v docker > /dev/null 2>&1; then
-
   echo "🐳 Installing Docker"
   curl -fsSL https://get.docker.com -o get-docker.sh
   sh get-docker.sh
-
+  sudo rm -f get-docker.sh
   # Post install
-  sudo apt-get install -y uidmap
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y uidmap
   dockerd-rootless-setuptool.sh install
-
   if ! command -v docker > /dev/null 2>&1; then
     echo "❌ Error installing Docker"
     exit 1
   fi
-
   echo "✅ Docker installed"
-else
-  echo "✅ Docker already installed"
 fi
-
 if ! systemctl is-active --quiet docker; then
-  # Iniciar Docker
   sudo systemctl start docker
   echo "✅ Docker started"
 else 
   echo "✅ Docker running"
 fi
 
-# ------------
-
+# ------ RITMO SERVICE ------
 # Downloading startup script
 startup_path=/usr/local/bin/ritmo/on-startup.sh
-sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh --output $startup_path
+sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh -o $startup_path
 sudo chmod a+x $startup_path
 # Downloading service file
 service_path=/etc/systemd/system/ritmo-box.service
-sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service --output $service_path
+sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service -o $service_path
 sudo chmod 644 $service_path
 sudo systemctl enable ritmo-box.service > /dev/null
 echo "✅ Configured startup script"
 
-# ------------
-
+# ------ PORTS ------
 sudo ufw allow 8082/tcp
-echo "✅ Port 8082 open"
-
-# ------------
-
 echo "✅ Setup completed"
 
-# ------------
-
+# ------ INIT ------
 $startup_path sh
 echo "✅ Ritmo BOX started! Go to box.ritmostudio.com to control the music"
