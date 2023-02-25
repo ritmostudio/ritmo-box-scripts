@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.91
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.92
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -98,7 +98,7 @@ if ! grep -q $pulse_auth_line /etc/pulse/default.pa; then
 fi
 
 # Select default audio device
-sudo sh -c "echo 'set-default-sink alsa_output.platform-soc_sound.analog-stereo' >> /etc/pulse/default.pa"
+sudo sh -c "echo 'set-default-sink 0' >> /etc/pulse/default.pa"
 
 pulseaudio -k > /dev/null
 pulseaudio -D
