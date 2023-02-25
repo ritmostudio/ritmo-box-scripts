@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.92
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.93
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -69,6 +69,8 @@ if [ -z "$access_token" ]; then
 fi
 
 # ----- ENV ------
+sudo mkdir -p /etc/ritmo
+env_path=/etc/ritmo/.env
 sudo rm -f $env_path
 sudo touch $env_path
 sudo sh -c "echo PORT=8082 >> $env_path"
