@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.94
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.95
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -105,13 +105,6 @@ sudo sh -c "echo 'set-default-sink 0' >> /etc/pulse/default.pa"
 pulseaudio -k > /dev/null
 pulseaudio -D
 echo "✅ Pulseaudio server started"
-
-
-# sed: can't read /^load-module module-native-protocol-unix/d: No such file or directory
-# grep: module-native-protocol-unix: No such file or directory
-# grep: auth-anonymous=1: No such file or directory
-# E: [pulseaudio] main.c: Failed to kill daemon: No such process
-# W: [pulseaudio] main.c: This program is not intended to be run as root (unless --system is specified).
 
 # ----- LEVEL DB ------
 sudo mkdir -p /usr/local/bin/ritmo/db
