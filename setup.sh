@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.93
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.94
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -93,9 +93,9 @@ if [ ! -f /etc/pulse/default.pa ]; then
 fi
 
 # allowing anonymous connections
-sed -i '' '/^load-module module-native-protocol-unix/d' /etc/pulse/default.pa
+sudo sed -i '/^load-module module-native-protocol-unix/d' /etc/pulse/default.pa
 pulse_auth_line="load-module module-native-protocol-unix auth-anonymous=1"
-if ! grep -q $pulse_auth_line /etc/pulse/default.pa; then
+if ! grep -q "$pulse_auth_line" /etc/pulse/default.pa; then
   sudo sh -c "$pulse_auth_line >> /etc/pulse/default.pa"
 fi
 
@@ -105,6 +105,13 @@ sudo sh -c "echo 'set-default-sink 0' >> /etc/pulse/default.pa"
 pulseaudio -k > /dev/null
 pulseaudio -D
 echo "✅ Pulseaudio server started"
+
+
+# sed: can't read /^load-module module-native-protocol-unix/d: No such file or directory
+# grep: module-native-protocol-unix: No such file or directory
+# grep: auth-anonymous=1: No such file or directory
+# E: [pulseaudio] main.c: Failed to kill daemon: No such process
+# W: [pulseaudio] main.c: This program is not intended to be run as root (unless --system is specified).
 
 # ----- LEVEL DB ------
 sudo mkdir -p /usr/local/bin/ritmo/db
@@ -134,16 +141,16 @@ else
 fi
 
 # ------ RITMO SERVICE ------
-# Downloading startup script
+# Download startup script
 startup_path=/usr/local/bin/ritmo/on-startup.sh
 sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh -o $startup_path
 sudo chmod a+x $startup_path
-# Downloading service file
+# Download service file
 service_path=/etc/systemd/system/ritmo-box.service
 sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service -o $service_path
 sudo chmod 644 $service_path
 sudo systemctl enable ritmo-box.service > /dev/null
-echo "✅ Configured startup script"
+echo "✅ Startup script set up"
 
 # ------ PORTS ------
 sudo ufw allow 8082/tcp
