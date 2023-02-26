@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.95
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.96
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -96,7 +96,7 @@ fi
 sudo sed -i '/^load-module module-native-protocol-unix/d' /etc/pulse/default.pa
 pulse_auth_line="load-module module-native-protocol-unix auth-anonymous=1"
 if ! grep -q "$pulse_auth_line" /etc/pulse/default.pa; then
-  sudo sh -c "$pulse_auth_line >> /etc/pulse/default.pa"
+  sudo sh -c "echo $pulse_auth_line >> /etc/pulse/default.pa"
 fi
 
 # Select default audio device
