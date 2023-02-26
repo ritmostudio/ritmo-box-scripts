@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.96
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.0.97
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -119,6 +119,7 @@ if ! command -v docker > /dev/null 2>&1; then
   sudo rm -f get-docker.sh
   # Post install
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y uidmap
+  FORCE_ROOTLESS_INSTALL=1
   dockerd-rootless-setuptool.sh install
   if ! command -v docker > /dev/null 2>&1; then
     echo "❌ Error installing Docker"
