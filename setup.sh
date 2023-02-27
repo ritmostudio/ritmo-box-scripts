@@ -137,10 +137,10 @@ fi
 # ------ RITMO SERVICE ------
 # Download startup script and docker-compose
 ritmo_scripts_path=https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main
-startup_path=/usr/local/bin/ritmo
-sudo curl -s $ritmo_scripts_path/on-startup.sh -o $startup_path/on-startup.sh
-sudo curl -s $ritmo_scripts_path/docker-compose.yaml -o $startup_path/docker-compose.yaml
-sudo chmod a+x $startup_path/on-startup.sh
+startup_path=/usr/local/bin/ritmo/on-startup.sh
+sudo curl -s $ritmo_scripts_path/on-startup.sh -o $startup_path
+sudo curl -s $ritmo_scripts_path/docker-compose.yaml -o /etc/ritmo/docker-compose.yaml
+sudo chmod a+x $startup_path
 # Download service file
 service_path=/etc/systemd/system/ritmo-box.service
 sudo curl -s $ritmo_scripts_path/service -o $service_path
