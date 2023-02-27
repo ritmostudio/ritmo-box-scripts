@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.0
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.1
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -135,13 +135,15 @@ else
 fi
 
 # ------ RITMO SERVICE ------
-# Download startup script
-startup_path=/usr/local/bin/ritmo/on-startup.sh
-sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/on-startup.sh -o $startup_path
-sudo chmod a+x $startup_path
+# Download startup script and docker-compose
+ritmo_scripts_path=https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main
+startup_path=/usr/local/bin/ritmo
+sudo curl -s $ritmo_scripts_path/on-startup.sh -o $startup_path/on-startup.sh
+sudo curl -s $ritmo_scripts_path/docker-compose.yaml -o $startup_path/docker-compose.yaml
+sudo chmod a+x $startup_path/on-startup.sh
 # Download service file
 service_path=/etc/systemd/system/ritmo-box.service
-sudo curl -s https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main/service -o $service_path
+sudo curl -s $ritmo_scripts_path/service -o $service_path
 sudo chmod 644 $service_path
 sudo systemctl enable ritmo-box.service > /dev/null
 echo "✅ Startup script set up"
