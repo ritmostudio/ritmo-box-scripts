@@ -2,8 +2,6 @@ version: "3.9"
 services:
   ui:
     image: lucassaid/ritmo-box-ui
-    environment:
-      - REACT_APP_BOX_URL=http://localhost:8082
     ports:
       - "80:3000"
   player:
