@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.2
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.3
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -18,22 +18,6 @@ if ! command -v systemctl > /dev/null 2>&1; then
   echo "❌ Systemd not found, make sure you are running this script on a Linux machine"
   exit 1
 fi
-
-# ------ RITMO CREDENTIALS ------
-while [ -z "$username" ]; do
-  echo "Branch: "
-  read username
-  if [ -z "$username" ]; then
-    echo "You need to enter the branch credential."
-  fi
-done
-while [ -z "$password" ]; do
-  echo "Branch password: "
-  read password
-  if [ -z "$password" ]; then
-    echo "You need to enter the branch password."
-  fi
-done
 
 # ------ ARGUMENTS ------
 for arg in "$@"; do
@@ -47,25 +31,8 @@ done
 
 if [ -z "$environment" ]; then
   api_url="https://api.ritmostudio.com"
-  influx_bucket="playback"
 else
   api_url="https://${environment}-api.ritmostudio.com"
-  influx_bucket="${environment}-playback"
-fi
-
-# ----- API LOGIN ------
-login_response=$(curl -s -X POST $api_url/auth/v1/player-login \
-  -H "Content-Type: application/json" \
-  -d "{\"credential\":\"$username\",\"password\":\"$password\"}")
-if [ "$(type -t login_response)" = "string" ] && [ "$login_response" == "INVALID_LOGIN" ]; then
-  echo "❌ Incorrect branch or password"
-  exit 1
-fi
-access_token=$(echo $login_response | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
-branch_id=$(echo $login_response | sed -n 's/.*"_id":"\([^"]*\)".*/\1/p')
-if [ -z "$access_token" ]; then
-  echo "❌ Failed to parse access token"
-  exit 1
 fi
 
 # ----- ENV ------
@@ -75,8 +42,6 @@ sudo rm -f $env_path
 sudo touch $env_path
 sudo sh -c "echo PORT=8082 >> $env_path"
 sudo sh -c "echo REACT_APP_API_URL=$api_url >> $env_path"
-sudo sh -c "echo REACT_APP_INFLUX_PLAYBACK_BUCKET=$influx_bucket >> $env_path"
-sudo sh -c "echo RITMO_TOKEN=$access_token >> $env_path"
 sudo sh -c "echo JWT_SECRET=$(openssl rand -hex 32) >> $env_path"
 echo "✅ Environment set"
 
@@ -150,8 +115,9 @@ echo "✅ Startup script set up"
 
 # ------ PORTS ------
 sudo ufw allow 8082/tcp
+sudo ufw allow 80/tcp
 echo "✅ Setup completed"
 
 # ------ INIT ------
 $startup_path sh
-echo "✅ Ritmo BOX started! Go to box.ritmostudio.com to control the music"
+echo "✅ Ritmo BOX started! Go to ritmo.local to control the music"
