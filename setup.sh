@@ -115,9 +115,9 @@ echo "✅ Startup script set up"
 
 # ------ PORTS ------
 sudo ufw allow 8082/tcp
-sudo ufw allow 80/tcp
+# sudo ufw allow 80/tcp
 echo "✅ Setup completed"
 
 # ------ INIT ------
 $startup_path sh
-echo "✅ Ritmo BOX started! Go to ritmo.local to control the music"
+echo "✅ Ritmo BOX started!"
