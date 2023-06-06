@@ -1,20 +1,20 @@
 version: "3.9"
 services:
-  ui:
-    image: lucassaid/ritmo-box-ui
-    ports:
-      - "80:3000"
-  # player:
-  #   image: lucassaid/ritmo-node-player
-  #   restart: on-failure
-  #   environment:
-  #     - PULSE_SERVER=unix:/run/user/1000/pulse/native
-  #     - REACT_APP_DB_PREFIX=/usr/local/bin/ritmo/db/
-  #   env_file:
-  #     - /etc/ritmo/.env
-  #   user: "1000:1000"
-  #   volumes:
-  #     - /run/user/1000/pulse/native:/run/user/1000/pulse/native
-  #     - /usr/local/bin/ritmo/db:/usr/local/bin/ritmo/db
+  # ui:
+  #   image: lucassaid/ritmo-box-ui
   #   ports:
-  #     - "8082:8082"
+  #     - "80:3000"
+  player:
+    image: lucassaid/ritmo-node-player
+    restart: on-failure
+    environment:
+      - PULSE_SERVER=unix:/run/user/1000/pulse/native
+      - REACT_APP_DB_PREFIX=/usr/local/bin/ritmo/db/
+    env_file:
+      - /etc/ritmo/.env
+    user: "1000:1000"
+    volumes:
+      - /run/user/1000/pulse/native:/run/user/1000/pulse/native
+      - /usr/local/bin/ritmo/db:/usr/local/bin/ritmo/db
+    ports:
+      - "8082:8082"
