@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.4
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.5
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -31,8 +31,10 @@ done
 
 if [ -z "$environment" ]; then
   api_url="https://api.ritmostudio.com"
+  ts_url="https://ts.ritmostudio.com"
 else
   api_url="https://${environment}-api.ritmostudio.com"
+  ts_url="https://${environment}-ts.ritmostudio.com"
 fi
 
 # ----- ENV ------
@@ -42,6 +44,7 @@ sudo rm -f $env_path
 sudo touch $env_path
 sudo sh -c "echo PORT=8082 >> $env_path"
 sudo sh -c "echo REACT_APP_API_URL=$api_url >> $env_path"
+sudo sh -c "echo REACT_APP_TS_URL=$ts_url >> $env_path"
 sudo sh -c "echo JWT_SECRET=$(openssl rand -hex 32) >> $env_path"
 echo "✅ Environment set"
 
@@ -65,10 +68,17 @@ if ! grep -q "$pulse_auth_line" /etc/pulse/default.pa; then
 fi
 
 # Select default audio device
-sudo sh -c "echo 'set-default-sink 0' >> /etc/pulse/default.pa"
+pulse_set_sink_line="set-default-sink 2"
+if ! grep -q "$pulse_set_sink_line" /etc/pulse/default.pa; then
+  sudo sh -c "echo $pulse_set_sink_line >> /etc/pulse/default.pa"
+fi
 
+# pulseaudio folder permissions
+sudo chmod -R 777 /run/user/1000/pulse/native
+
+# restart
 pulseaudio -k > /dev/null
-pulseaudio -D
+pulseaudio --start
 echo "✅ Pulseaudio server started"
 
 # ----- LEVEL DB ------
