@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.5
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.6
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -43,48 +43,9 @@ env_path=/etc/ritmo/.env
 sudo rm -f $env_path
 sudo touch $env_path
 sudo sh -c "echo PORT=8082 >> $env_path"
-sudo sh -c "echo REACT_APP_API_URL=$api_url >> $env_path"
-sudo sh -c "echo REACT_APP_TS_URL=$ts_url >> $env_path"
+sudo sh -c "echo API_URL=$api_url >> $env_path"
 sudo sh -c "echo JWT_SECRET=$(openssl rand -hex 32) >> $env_path"
 echo "✅ Environment set"
-
-# ----- PULSEAUDIO ------
-if [ ! -f /etc/pulse/default.pa ]; then
-  echo "🔊 Installing Pulseaudio"
-  sudo apt-get update
-  sudo DEBIAN_FRONTEND=noninteractive apt-get -y install pulseaudio pulseaudio-utils alsa-utils
-  if [ ! -f /etc/pulse/default.pa ]; then
-    echo "❌ Error installing Pulseaudio"
-    exit 1
-  fi
-  echo "✅ Pulseaudio installed"
-fi
-
-# allowing anonymous connections
-sudo sed -i '/^load-module module-native-protocol-unix/d' /etc/pulse/default.pa
-pulse_auth_line="load-module module-native-protocol-unix auth-anonymous=1"
-if ! grep -q "$pulse_auth_line" /etc/pulse/default.pa; then
-  sudo sh -c "echo $pulse_auth_line >> /etc/pulse/default.pa"
-fi
-
-# Select default audio device
-pulse_set_sink_line="set-default-sink 2"
-if ! grep -q "$pulse_set_sink_line" /etc/pulse/default.pa; then
-  sudo sh -c "echo $pulse_set_sink_line >> /etc/pulse/default.pa"
-fi
-
-# pulseaudio folder permissions
-sudo chmod -R 777 /run/user/1000/pulse/native
-
-# restart
-pulseaudio -k > /dev/null
-pulseaudio --start
-echo "✅ Pulseaudio server started"
-
-# ----- LEVEL DB ------
-sudo mkdir -p /usr/local/bin/ritmo/db
-sudo chmod -R 777 /usr/local/bin/ritmo/db
-echo "✅ Configured LevelDB"
 
 # ----- DOCKER -------
 if ! command -v docker > /dev/null 2>&1; then

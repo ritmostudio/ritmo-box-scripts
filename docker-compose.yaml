@@ -1,20 +1,57 @@
-version: "3.9"
+version: "2"
+
+volumes:
+  pulse:
+  level-db:
+
 services:
-  # ui:
-  #   image: lucassaid/ritmo-box-ui
-  #   ports:
-  #     - "80:3000"
-  player:
-    image: lucassaid/ritmo-node-player
-    restart: on-failure
-    environment:
-      - PULSE_SERVER=unix:/run/user/1000/pulse/native
-      - REACT_APP_DB_PREFIX=/usr/local/bin/ritmo/db/
-    env_file:
-      - /etc/ritmo/.env
-    user: "1000:1000"
+  # wifi-connect:
+  #   image: bh.cr/balenalabs/wifi-connect-aarch64
+  #   restart: always
+  #   network_mode: host
+  #   privileged: true
+  #   labels:
+  #     io.balena.features.dbus: "1"
+  #     io.balena.features.firmware: "1"
+
+  audio:
+    image: lucassaid/ritmo-box-audio
+    privileged: true
     volumes:
-      - /run/user/1000/pulse/native:/run/user/1000/pulse/native
-      - /usr/local/bin/ritmo/db:/usr/local/bin/ritmo/db
+      - "pulse:/run/pulse"
+
+  node-player:
+    image: lucassaid/ritmo-node-player
+    volumes:
+      - "pulse:/run/pulse"
+      - "level-db:/level-db"
+    restart: on-failure
     ports:
       - "8082:8082"
+    environment:
+      API_URL: https://staging-api.ritmostudio.com
+      DB_PREFIX: /level-db/
+      JWT_SECRET: 2d019272a5871508437fbecde397fd79e32d8c35cd9ce4815fcd5a7b466bd8b7
+      NODE_ENV: staging
+    depends_on:
+      - audio
+
+  control-ui:
+    build: lucassaid/ritmo-box-ui
+    restart: on-failure
+    ports:
+      - "80:3000"
+    depends_on:
+      - node-player
+
+  # supervisor-proxy:
+  #   build: ./supervisor-proxy
+  #   restart: on-failure
+  #   ports:
+  #     - "8083:8083"
+  #   depends_on:
+  #     - control-ui
+  #   environment:
+  #     JWT_SECRET: 2d019272a5871508437fbecde397fd79e32d8c35cd9ce4815fcd5a7b466bd8b7
+  #   labels:
+  #     io.balena.features.supervisor-api: '1'
