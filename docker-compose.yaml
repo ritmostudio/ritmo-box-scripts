@@ -1,9 +1,5 @@
 version: "2"
 
-volumes:
-  pulse:
-  level-db:
-
 services:
   # wifi-connect:
   #   image: bh.cr/balenalabs/wifi-connect-aarch64
@@ -14,27 +10,18 @@ services:
   #     io.balena.features.dbus: "1"
   #     io.balena.features.firmware: "1"
 
-  # audio:
-  #   image: lucassaid/ritmo-box-audio
-  #   privileged: true
-  #   volumes:
-  #     - "pulse:/run/pulse"
-
   node-player:
     image: lucassaid/ritmo-node-player
     volumes:
-      - "pulse:/run/pulse"
-      - "level-db:/level-db"
+      - /run/user/1000/pulse/native:/run/user/1000/pulse/native
+      - /usr/local/bin/ritmo/db:/usr/local/bin/ritmo/db
     restart: on-failure
     ports:
       - "8082:8082"
     environment:
       API_URL: https://staging-api.ritmostudio.com
-      DB_PREFIX: /level-db/
       JWT_SECRET: 2d019272a5871508437fbecde397fd79e32d8c35cd9ce4815fcd5a7b466bd8b7
       NODE_ENV: staging
-    depends_on:
-      - audio
 
   control-ui:
     image: lucassaid/ritmo-box-ui
