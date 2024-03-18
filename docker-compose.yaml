@@ -14,11 +14,11 @@ services:
   #     io.balena.features.dbus: "1"
   #     io.balena.features.firmware: "1"
 
-  audio:
-    image: lucassaid/ritmo-box-audio
-    privileged: true
-    volumes:
-      - "pulse:/run/pulse"
+  # audio:
+  #   image: lucassaid/ritmo-box-audio
+  #   privileged: true
+  #   volumes:
+  #     - "pulse:/run/pulse"
 
   node-player:
     image: lucassaid/ritmo-node-player
@@ -37,7 +37,7 @@ services:
       - audio
 
   control-ui:
-    build: lucassaid/ritmo-box-ui
+    image: lucassaid/ritmo-box-ui
     restart: on-failure
     ports:
       - "80:3000"

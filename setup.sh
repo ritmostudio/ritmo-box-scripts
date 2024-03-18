@@ -19,34 +19,6 @@ if ! command -v systemctl > /dev/null 2>&1; then
   exit 1
 fi
 
-# ------ ARGUMENTS ------
-for arg in "$@"; do
-  case $arg in
-    -e=*)
-      environment="${arg#*=}"
-      shift
-      ;;
-  esac
-done
-
-if [ -z "$environment" ]; then
-  api_url="https://api.ritmostudio.com"
-  ts_url="https://ts.ritmostudio.com"
-else
-  api_url="https://${environment}-api.ritmostudio.com"
-  ts_url="https://${environment}-ts.ritmostudio.com"
-fi
-
-# ----- ENV ------
-sudo mkdir -p /etc/ritmo
-env_path=/etc/ritmo/.env
-sudo rm -f $env_path
-sudo touch $env_path
-sudo sh -c "echo PORT=8082 >> $env_path"
-sudo sh -c "echo API_URL=$api_url >> $env_path"
-sudo sh -c "echo JWT_SECRET=$(openssl rand -hex 32) >> $env_path"
-echo "✅ Environment set"
-
 # ----- DOCKER -------
 if ! command -v docker > /dev/null 2>&1; then
   echo "🐳 Installing Docker"
@@ -72,6 +44,7 @@ fi
 
 # ------ RITMO SERVICE ------
 # Download startup script and docker-compose
+sudo mkdir -p /etc/ritmo
 ritmo_scripts_path=https://raw.githubusercontent.com/ritmostudio/ritmo-box-scripts/main
 startup_path=/usr/local/bin/ritmo/on-startup.sh
 sudo curl -s $ritmo_scripts_path/on-startup.sh -o $startup_path
