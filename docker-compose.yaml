@@ -13,3 +13,11 @@ services:
       API_URL: https://api.ritmostudio.com
       JWT_SECRET: 2d019272a5871508437fbecde397fd79e32d8c35cd9ce4815fcd5a7b466bd8b7
       NODE_ENV: production
+
+  control-ui:
+    image: lucassaid/ritmo-box-ui
+    restart: on-failure
+    ports:
+      - "80:3000"
+    depends_on:
+      - node-player

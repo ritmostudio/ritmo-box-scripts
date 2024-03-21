@@ -8,7 +8,7 @@ echo "
   ❬   .  ❬  ❬  ❬    ❬  ❬    ❬  |\    /|  ❬❬  ❬  ❬  ❬
   |  | \  \ |  |    |  |    |  |      |  ||  |  |  |
   |  |  '  '|  |    |  |    |  | '  ' |  |'  '--'  '
-  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.8
+  |  |  |  ||  |    |  |    |  |  \/  |  | \      /   V0.1.9
    ¯¯    ¯¯  ¯¯      ¯¯      ¯¯        ¯¯    ¯¯¯¯
 
 "
@@ -93,8 +93,7 @@ echo "✅ Startup script set up"
 
 # ------ PORTS ------
 sudo ufw allow 8082/tcp
-# enable for UI
-# sudo ufw allow 80/tcp 
+sudo ufw allow 80/tcp 
 echo "✅ Setup completed"
 
 # ------ INIT ------
