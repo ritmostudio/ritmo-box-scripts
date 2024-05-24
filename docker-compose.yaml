@@ -1,10 +1,21 @@
 version: "2"
 
+volumes:
+  pulse:
+
 services:
+  audio:
+    image: lucassaid/ritmo-audio
+    privileged: true
+    volumes:
+      - "pulse:/run/pulse"
+
   node-player:
+    depends_on:
+      - audio
     image: lucassaid/ritmo-node-player
     volumes:
-      - /run/user/1000/pulse/native:/run/user/1000/pulse/native
+      - "pulse:/run/pulse"
       - /usr/local/bin/ritmo/db:/usr/local/bin/ritmo/db
     restart: on-failure
     ports:
